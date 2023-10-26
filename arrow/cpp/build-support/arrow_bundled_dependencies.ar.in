@@ -1,0 +1,6 @@
+CREATE /mnt/afstuderen/arrow/cpp/build-support/debug/libarrow_bundled_dependencies.a
+ADDLIB $<TARGET_FILE:thrift::thrift>
+ADDLIB $<TARGET_FILE:re2::re2>
+ADDLIB $<TARGET_FILE:utf8proc::utf8proc>
+SAVE
+END

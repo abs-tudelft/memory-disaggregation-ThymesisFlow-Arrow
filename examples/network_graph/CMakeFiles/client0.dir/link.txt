@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++17 -g   CMakeFiles/client0.dir/client0.cpp.o  -o client0   -L/hpi/fs00/home/philip.groet/afstuderen/arrow-tests/md_test_2node_tf/lib/debug  -Wl,-rpath,/hpi/fs00/home/philip.groet/afstuderen/arrow-tests/md_test_2node_tf/lib/debug -larrow 

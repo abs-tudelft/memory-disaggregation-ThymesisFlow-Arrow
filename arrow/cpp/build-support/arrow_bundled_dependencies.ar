@@ -1,0 +1,6 @@
+CREATE /mnt/afstuderen/arrow/cpp/build-support/debug/libarrow_bundled_dependencies.a
+ADDLIB /mnt/afstuderen/arrow/cpp/build-support/thrift_ep-install/lib/libthrift.a
+ADDLIB /mnt/afstuderen/arrow/cpp/build-support/re2_ep-install/lib/libre2.a
+ADDLIB /mnt/afstuderen/arrow/cpp/build-support/utf8proc_ep-install/lib/libutf8proc.a
+SAVE
+END

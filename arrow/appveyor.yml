@@ -1,0 +1,68 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Operating system (build VM template)
+os: Visual Studio 2019
+
+only_commits:
+  # Skip commits not related to Python or C++
+  files:
+    - appveyor.yml
+    - ci/appveyor*
+    - ci/conda*
+    - cpp/
+    - format/
+    - python/
+
+cache:
+  - C:\Users\Appveyor\clcache1
+
+matrix:
+  fast_finish: true
+
+environment:
+  global:
+    APPVEYOR_SAVE_CACHE_ON_ERROR: true
+    MSVC_DEFAULT_OPTIONS: ON
+
+    # Change the clcache dir to reset caches everywhere when a setting
+    # is changed incompatibly (e.g. CLCACHE_COMPRESS).
+    CLCACHE_DIR: C:\Users\Appveyor\clcache1
+    CLCACHE_SERVER: 1
+    CLCACHE_COMPRESS: 1
+    CLCACHE_COMPRESSLEVEL: 6
+
+    ARCH: "64"
+    ARROW_BUILD_FLIGHT: "ON"
+    ARROW_BUILD_FLIGHT_SQL: "ON"
+    ARROW_BUILD_GANDIVA: "ON"
+    ARROW_GCS: "ON"
+    ARROW_S3: "ON"
+    GENERATOR: Ninja
+    PYTHON: "3.8"
+
+before_build:
+  - call ci\appveyor-cpp-setup.bat
+
+build_script:
+  - call ci\appveyor-cpp-build.bat
+
+# Disable test discovery
+test: off
+
+after_build:
+  - clcache -s

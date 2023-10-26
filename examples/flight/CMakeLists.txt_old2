@@ -1,0 +1,47 @@
+cmake_minimum_required(VERSION 3.13)
+find_package(Threads)
+
+# find_package(protobuf CONFIG REQUIRED)
+# find_package(gRPC CONFIG REQUIRED)
+include(FetchContent)
+FetchContent_Declare(
+  grpc
+  GIT_REPOSITORY https://github.com/grpc/grpc.git
+  # when using gRPC, you will actually set this to an existing tag, such as
+  # v1.25.0, v1.26.0 etc..
+  # For the purpose of testing, we override the tag used to the commit
+  # that's currently under test.
+  GIT_TAG        v1.52.1)
+FetchContent_MakeAvailable(grpc)
+
+
+
+set(PROTO_FILES
+  proto/helloworld.proto
+)
+
+add_library(myproto ${PROTO_FILES})
+target_link_libraries(myproto
+    PUBLIC
+        protobuf::libprotobuf
+        gRPC::grpc
+        gRPC::grpc++
+)
+
+target_include_directories(myproto PUBLIC target_include_directories(myproto PUBLIC ${CMAKE_CURRENT_BINARY_DIR})/proto)
+
+get_target_property(grpc_cpp_plugin_location $<TARGET_FILE:grpc_cpp_plugin> LOCATION)
+protobuf_generate(TARGET myproto LANGUAGE cpp)
+protobuf_generate(TARGET myproto LANGUAGE grpc GENERATE_EXTENSIONS .grpc.pb.h .grpc.pb.cc PLUGIN "protoc-gen-grpc=${grpc_cpp_plugin_location}")
+
+
+set(SOURCES
+    main.cc
+)
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
+add_executable(main ${SOURCES})
+target_link_libraries(main
+    Arrow::arrow_static ${PARQUET_LINK_LIBS} arrow_flight_static
+    PRIVATE
+        myproto
+)

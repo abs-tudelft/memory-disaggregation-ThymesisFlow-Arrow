@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/mnt/wdraid/kvm-shared-mount/afstuderen/arrow-tests/arrow-use-compiled/build",
+  "command": "/usr/bin/c++ -g -std=gnu++17 -o CMakeFiles/main.dir/main.cc.o -c /mnt/wdraid/kvm-shared-mount/afstuderen/arrow-tests/arrow-use-compiled/main.cc",
+  "file": "/mnt/wdraid/kvm-shared-mount/afstuderen/arrow-tests/arrow-use-compiled/main.cc"
+}
+]

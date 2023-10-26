@@ -1,0 +1,150 @@
+// Copyright 2023 Philip Groet
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package grpc_tfo;
+
+service OrchestratorServer {
+  rpc Malloc(MallocRequest) returns (MallocReply) {};
+  rpc Reallocate(ReallocateRequest) returns (ReallocateReply) {};
+  rpc Free(FreeRequest) returns (FreeReply) {};
+  rpc FlushBlocks(FlushRequest) returns (FlushReply) {};
+
+  rpc Unlock(UnlockRequest) returns (UnlockReply) {};
+  rpc SendTable(TableChunk) returns (TableChunkReply) {};
+  rpc SendRecordBatchMD_v1(RecordBatchMD_v1) returns (SendRecordBatchMDReply_v1);
+  rpc SendRecordBatchMD_v2(RecordBatchMD_v2) returns (SendRecordBatchMDReply_v2);
+
+  rpc ClearAllHugeTables(PingMessage) returns (PingReply);
+
+  rpc SendState(ApplicationState) returns (StateReply) {};
+
+  rpc Ping(PingMessage) returns (PingReply) {};
+}
+
+message MallocRequest {
+  uint32 size = 1;
+}
+message MallocReply {
+  uint64 address = 1;
+}
+
+message ReallocateRequest {
+  uint32 old_size = 1;
+  uint32 new_size = 2;
+  uint64 address = 3;
+}
+message ReallocateReply {
+  uint64 success = 1;
+  uint64 address = 2;
+}
+
+message FreeRequest {
+  uint64 address = 1;
+  /// @param size Allocated size located at buffer. An allocator implementation
+  ///   may use this for tracking the amount of allocated bytes as well as for
+  ///   faster deallocation if supported by its backend.
+  uint64 size = 2;
+}
+message FreeReply {
+  uint64 success = 1;
+}
+
+message FlushRequest {
+  message Block {
+    uint64 pointer = 1;
+    uint64 size = 2;
+  }
+
+  repeated Block block = 1;
+}
+message FlushReply {
+  bool success = 1;
+}
+
+message UnlockRequest {
+  uint64 address = 1;
+}
+
+message UnlockReply {
+  bool success = 1;
+}
+
+message TableChunk {
+  // This indicates the location of the Table in the bigger dataset.
+  uint32 start_index = 1;
+
+  bytes ipc_table_payload = 2;
+}
+
+message TableChunkReply {
+  bool success = 1;
+}
+
+message RecordBatchMD_v1 {
+  message Buffer {
+    uint32 size = 1;
+    uint32 capacity = 2;
+    uint64 pointer = 3;
+  }
+
+  repeated Buffer buffer = 1;
+  uint32 num_rows = 2;
+  uint32 start_index = 3;
+}
+message SendRecordBatchMDReply_v1 {
+  bool success = 1;
+}
+
+message RecordBatchMD_v2 {
+  message Field {
+    message Buffer {
+      // uint32 capacity = 1; // As we will not be writing from remote, this is not necessary for the other party to know
+      int64 size = 2;
+      uint64 pointer = 3;
+      uint32 level = 4;
+    }
+
+    bytes name = 1;
+    uint64 type = 2; // static_cast<Type>(data[0])
+    int64 length = 3;
+    int64 null_count = 4;
+    repeated Buffer buffer = 5;
+  }
+
+  uint64 rows = 1;
+  uint64 start_index = 2;
+  repeated Field field = 3;
+}
+message SendRecordBatchMDReply_v2 {
+  bool success = 1;
+}
+
+message ApplicationState {
+  uint32 node_id = 1;
+  uint32 flag = 2;
+}
+
+message StateReply {
+  bool success = 1;
+}
+
+message PingMessage {
+
+}
+
+message PingReply {
+  bool success = 1;
+}

@@ -1,0 +1,1 @@
+cmd='/usr/bin/cmake;-DCMAKE_C_COMPILER=/usr/bin/cc;-DCMAKE_CXX_COMPILER=/usr/bin/c++;-DCMAKE_AR=/usr/bin/ar;-DCMAKE_RANLIB=/usr/bin/ranlib;-DCMAKE_INSTALL_PREFIX=/mnt/afstuderen/arrow/cpp/build-support/utf8proc_ep-install;-DCMAKE_BUILD_TYPE=DEBUG;-DCMAKE_INSTALL_LIBDIR=lib;-DBUILD_SHARED_LIBS=OFF;-GNinja;<SOURCE_DIR><SOURCE_SUBDIR>'
