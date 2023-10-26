@@ -2,6 +2,8 @@
 
 This repository contains the code of Philip Groet's Master Thesis project. The project aims to create a Memory disaggregation platform in which servers can read each other's memory in a fully transparent fashion. Any load/store/memory instructions executed on remote memory address ranges are transparently rerouted to the remote memory. Transparently meaning that the user application has no knowledge where a certain memory address is located, and all hardware logic for memory CPU caching for example is also active for remote memory accesses.
 
+You can read find the thesis at the education repository: [https://repository.tudelft.nl/islandora/object/uuid:e879eefc-4b8e-4a4b-b70e-f95128993aca?collection=education](https://repository.tudelft.nl/islandora/object/uuid:e879eefc-4b8e-4a4b-b70e-f95128993aca?collection=education)
+
 This transparent behavior is especially useful for:
 - Remote memory is caches locally
 - Out-Of-Order instruction processing hardware of the processor also works on remote memory
